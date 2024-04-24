@@ -65,73 +65,77 @@ void loop()
 
 void rotateMotors(int motorSpeed1, int motorSpeed2, int motorSpeed3, int motorSpeed4)
 {
-   if (rightMotorSpeed1 < 0)
+  // Logic for motor 1
+  if (motorSpeed1 < 0)
   {
-    digitalWrite(rightMotorPin1_1, LOW);
-    digitalWrite(rightMotorPin2_1, HIGH);    
+    digitalWrite(motorPin1_1, LOW);
+    digitalWrite(motorPin2_1, HIGH);    
   }
-  else if (rightMotorSpeed1 > 0)
+  else if (motorSpeed1 > 0)
   {
-    digitalWrite(rightMotorPin1_1, HIGH);
-    digitalWrite(rightMotorPin2_1, LOW);      
-  }
-  else
-  {
-    digitalWrite(rightMotorPin1_1, LOW);
-    digitalWrite(rightMotorPin2_1, LOW);      
-  }
-
-  if (leftMotorSpeed1 < 0)
-  {
-    digitalWrite(leftMotorPin1_1, LOW);
-    digitalWrite(leftMotorPin2_1, HIGH);    
-  }
-  else if (leftMotorSpeed1 > 0)
-  {
-    digitalWrite(leftMotorPin1_1, HIGH);
-    digitalWrite(leftMotorPin2_1, LOW);      
-  }
-  else 
-  {
-    digitalWrite(leftMotorPin1_1, LOW);
-    digitalWrite(leftMotorPin2_1, LOW);      
-  }
-
-  if (rightMotorSpeed2 < 0)
-  {
-    digitalWrite(rightMotorPin1_2, LOW);
-    digitalWrite(rightMotorPin2_2, HIGH);    
-  }
-  else if (rightMotorSpeed2 > 0)
-  {
-    digitalWrite(rightMotorPin1_2, HIGH);
-    digitalWrite(rightMotorPin2_2, LOW);      
+    digitalWrite(motorPin1_1, HIGH);
+    digitalWrite(motorPin2_1, LOW);      
   }
   else
   {
-    digitalWrite(rightMotorPin1_2, LOW);
-    digitalWrite(rightMotorPin2_2, LOW);      
+    digitalWrite(motorPin1_1, LOW);
+    digitalWrite(motorPin2_1, LOW);      
   }
 
-  
-  if (leftMotorSpeed2 < 0)
+  // Logic for motor 2
+  if (motorSpeed2 < 0)
   {
-    digitalWrite(leftMotorPin1_2, LOW);
-    digitalWrite(leftMotorPin2_2, HIGH);    
+    digitalWrite(motorPin1_2, LOW);
+    digitalWrite(motorPin2_2, HIGH);    
   }
-  else if (leftMotorSpeed2 > 0)
+  else if (motorSpeed2 > 0)
   {
-    digitalWrite(leftMotorPin1_2, HIGH);
-    digitalWrite(leftMotorPin2_2, LOW);      
+    digitalWrite(motorPin1_2, HIGH);
+    digitalWrite(motorPin2_2, LOW);      
   }
-  else 
+  else
   {
-    digitalWrite(leftMotorPin1_2, LOW);
-    digitalWrite(leftMotorPin2_2, LOW);      
+    digitalWrite(motorPin1_2, LOW);
+    digitalWrite(motorPin2_2, LOW);      
   }
 
-  analogWrite(enableRightMotor1, abs(rightMotorSpeed1));
-  analogWrite(enableLeftMotor1, abs(leftMotorSpeed1));
-  analogWrite(enableRightMotor2, abs(rightMotorSpeed2));
-  analogWrite(enableLeftMotor2, abs(leftMotorSpeed2));
+  // Logic for motor 3
+  if (motorSpeed3 < 0)
+  {
+    digitalWrite(motorPin1_3, LOW);
+    digitalWrite(motorPin2_3, HIGH);    
+  }
+  else if (motorSpeed3 > 0)
+  {
+    digitalWrite(motorPin1_3, HIGH);
+    digitalWrite(motorPin2_3, LOW);      
+  }
+  else
+  {
+    digitalWrite(motorPin1_3, LOW);
+    digitalWrite(motorPin2_3, LOW);      
+  }
+
+  // Logic for motor 4
+  if (motorSpeed4 < 0)
+  {
+    digitalWrite(motorPin1_4, LOW);
+    digitalWrite(motorPin2_4, HIGH);    
+  }
+  else if (motorSpeed4 > 0)
+  {
+    digitalWrite(motorPin1_4, HIGH);
+    digitalWrite(motorPin2_4, LOW);      
+  }
+  else
+  {
+    digitalWrite(motorPin1_4, LOW);
+    digitalWrite(motorPin2_4, LOW);      
+  }
+
+  // AnalogWrite to the enable pins for all motors
+  analogWrite(enableMotor1, abs(motorSpeed1));
+  analogWrite(enableMotor2, abs(motorSpeed2));
+  analogWrite(enableMotor3, abs(motorSpeed3));
+  analogWrite(enableMotor4, abs(motorSpeed4));
 }
