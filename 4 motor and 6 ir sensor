@@ -1,141 +1,77 @@
-#define IR_SENSOR_1 2
-#define IR_SENSOR_2 3
-#define IR_SENSOR_3 4
-#define IR_SENSOR_4 5
-#define IR_SENSOR_5 6
-#define IR_SENSOR_6 7
+#define LENB 11
+#define LMN3 12
+#define LMN4 13
+#define RENA 10
+#define RMN1 9
+#define RMN2 8
 
-#define MOTOR_SPEED 180
+#define IRNUM 6  //define number of ir sensor
 
-int enableMotor1 = 8;
-int motorPin1_1 = 9;
-int motorPin2_1 = 10;
+// Define the analog pins to which IR sensors are connected
+int IRPins[IRNUM] = {2, 3, 4, 5, 6, 7};
+#define speed 60
 
-int enableMotor2 = 11;
-int motorPin1_2 = 12;
-int motorPin2_2 = 13;
-
-int enableMotor3 = A0;
-int motorPin1_3 = A1;
-int motorPin2_3 = A2;
-
-int enableMotor4 = A3;
-int motorPin1_4 = A4;
-int motorPin2_4 = A5;
-
-void setup()
-{
-  pinMode(enableMotor1, OUTPUT);
-  pinMode(motorPin1_1, OUTPUT);
-  pinMode(motorPin2_1, OUTPUT);
-
-  pinMode(enableMotor2, OUTPUT);
-  pinMode(motorPin1_2, OUTPUT);
-  pinMode(motorPin2_2, OUTPUT);
-
-  pinMode(enableMotor3, OUTPUT);
-  pinMode(motorPin1_3, OUTPUT);
-  pinMode(motorPin2_3, OUTPUT);
-
-  pinMode(enableMotor4, OUTPUT);
-  pinMode(motorPin1_4, OUTPUT);
-  pinMode(motorPin2_4, OUTPUT);
-
-  pinMode(IR_SENSOR_1, INPUT);
-  pinMode(IR_SENSOR_2, INPUT);
-  pinMode(IR_SENSOR_3, INPUT);
-  pinMode(IR_SENSOR_4, INPUT);
-  pinMode(IR_SENSOR_5, INPUT);
-  pinMode(IR_SENSOR_6, INPUT);
-
-  rotateMotors(0, 0, 0, 0);
+void setup() {
+  // Initialize motor control pins as outputs
+  pinMode(LENB, OUTPUT);
+  pinMode(LMN3, OUTPUT);
+  pinMode(LMN4, OUTPUT);
+  pinMode(RENA, OUTPUT);
+  pinMode(RMN1, OUTPUT);
+  pinMode(RMN2, OUTPUT);
+  // Initialize ir sensor pins as inputs
+  for (int i = 0; i < IRNUM; i++) {
+    pinMode(IRPins[i], INPUT);
+  }
 }
 
-void loop()
-{
-  int irSensorValue1 = digitalRead(IR_SENSOR_1);
-  int irSensorValue2 = digitalRead(IR_SENSOR_2);
-  int irSensorValue3 = digitalRead(IR_SENSOR_3);
-  int irSensorValue4 = digitalRead(IR_SENSOR_4);
-  int irSensorValue5 = digitalRead(IR_SENSOR_5);
-  int irSensorValue6 = digitalRead(IR_SENSOR_6);
-
-  // logic here by sensor reading control
-}
-
-void rotateMotors(int motorSpeed1, int motorSpeed2, int motorSpeed3, int motorSpeed4)
-{
-  // Logic for motor 1
-  if (motorSpeed1 < 0)
-  {
-    digitalWrite(motorPin1_1, LOW);
-    digitalWrite(motorPin2_1, HIGH);    
+void loop() {
+  int left = 0;
+  int right = 0;
+  // Read digital values from each IR sensor
+  for (int i = 0; i < (IRNUM / 2); i++) {
+    left += digitalRead(IRPins[i]); // Read digital value
   }
-  else if (motorSpeed1 > 0)
-  {
-    digitalWrite(motorPin1_1, HIGH);
-    digitalWrite(motorPin2_1, LOW);      
+  for (int i = IRNUM / 2; i < IRNUM; i++) {
+    right += digitalRead(IRPins[i]); // Read digital value
   }
-  else
-  {
-    digitalWrite(motorPin1_1, LOW);
-    digitalWrite(motorPin2_1, LOW);      
-  }
-
-  // Logic for motor 2
-  if (motorSpeed2 < 0)
-  {
-    digitalWrite(motorPin1_2, LOW);
-    digitalWrite(motorPin2_2, HIGH);    
-  }
-  else if (motorSpeed2 > 0)
-  {
-    digitalWrite(motorPin1_2, HIGH);
-    digitalWrite(motorPin2_2, LOW);      
-  }
-  else
-  {
-    digitalWrite(motorPin1_2, LOW);
-    digitalWrite(motorPin2_2, LOW);      
+  if (left == 3) { // When left three sensors are active, stop left motor
+    digitalWrite(LMN3, LOW);
+    digitalWrite(LMN4, LOW);
+  } else {
+    // Control left motor based on sensor readings
+    int error = left - right;
+    int kc = 0.04; // Adjusted value for proportional control
+    int p = error * kc;
+    int lspeed = speed - p;
+    if (lspeed >= 0) { // left motor forward
+      digitalWrite(LMN3, HIGH);
+      digitalWrite(LMN4, LOW);
+      analogWrite(LENB, lspeed);
+    } else { // left motor backward
+      digitalWrite(LMN3, LOW);
+      digitalWrite(LMN4, HIGH);
+      analogWrite(LENB, -lspeed);
+    }
   }
 
-  // Logic for motor 3
-  if (motorSpeed3 < 0)
-  {
-    digitalWrite(motorPin1_3, LOW);
-    digitalWrite(motorPin2_3, HIGH);    
+  if (right == 3) { // When right three sensors are active, stop right motor
+    digitalWrite(RMN1, LOW);
+    digitalWrite(RMN2, LOW);
+  } else {
+    // Control right motor based on sensor readings
+    int error = right - left;
+    int kc = 0.04; // Adjusted value for proportional control
+    int p = error * kc;
+    int rspeed = speed - p;
+    if (rspeed >= 0) { // right motor forward
+      digitalWrite(RMN1, HIGH);
+      digitalWrite(RMN2, LOW);
+      analogWrite(RENA, rspeed);
+    } else { // right motor backward
+      digitalWrite(RMN1, LOW);
+      digitalWrite(RMN2, HIGH);
+      analogWrite(RENA, -rspeed);
+    }
   }
-  else if (motorSpeed3 > 0)
-  {
-    digitalWrite(motorPin1_3, HIGH);
-    digitalWrite(motorPin2_3, LOW);      
-  }
-  else
-  {
-    digitalWrite(motorPin1_3, LOW);
-    digitalWrite(motorPin2_3, LOW);      
-  }
-
-  // Logic for motor 4
-  if (motorSpeed4 < 0)
-  {
-    digitalWrite(motorPin1_4, LOW);
-    digitalWrite(motorPin2_4, HIGH);    
-  }
-  else if (motorSpeed4 > 0)
-  {
-    digitalWrite(motorPin1_4, HIGH);
-    digitalWrite(motorPin2_4, LOW);      
-  }
-  else
-  {
-    digitalWrite(motorPin1_4, LOW);
-    digitalWrite(motorPin2_4, LOW);      
-  }
-
-  // AnalogWrite to the enable pins for all motors
-  analogWrite(enableMotor1, abs(motorSpeed1));
-  analogWrite(enableMotor2, abs(motorSpeed2));
-  analogWrite(enableMotor3, abs(motorSpeed3));
-  analogWrite(enableMotor4, abs(motorSpeed4));
 }
